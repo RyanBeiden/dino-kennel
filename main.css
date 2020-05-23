@@ -1,3 +1,20 @@
 body {
   background-color: powderblue;
 }
+
+.dino-image {
+  width: 250px;
+}
+
+i {
+  font-size: 2em;
+  padding: 10px;
+}
+
+.card-footer {
+  margin: -5px !important;
+}
+
+.extinguish-form {
+  padding: 150px 300px 0px 300px;
+}
