@@ -40,7 +40,7 @@ const dinos = [
     owner: 'Matt',
     adventures: [],
     health: 100,
-    imageUrl: 'https://lh3.googleusercontent.com/proxy/_rJSL88ErOEvgHl5SInWOEolOdikwIMcKWPv9iqZzt3IUkD33WdG6d9qd8TmNJFSiszTXm7JeGQPocmB_BZErKxt__25LOpW75dmnVuy0nuY0PatX2cIYA-C',
+    imageUrl: 'https://bit.ly/3c6Rg41',
     isDeleted: false
   },
   {
@@ -95,8 +95,36 @@ const dinos = [
     owner: 'Matt',
     adventures: [],
     health: 22,
-    imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTOdrC7hlvBawFQ7g8vgwHcfQphX5WfeN2bth0dvc4M2oxNGdSD',
+    imageUrl: 'https://bit.ly/2WZhJfM',
     isDeleted: false
+  }
+];
+
+const adventures = [
+  {
+    adventureName: 'Adventure 1',
+    hpCost: 30,
+    adventureDescription: 'This adventure was crazy!'
+  },
+  {
+    adventureName: 'Adventure 2!',
+    hpCost: 10,
+    adventureDescription: 'This adventure was a walk in the park!'
+  },
+  {
+    adventureName: 'Adventure 3!!',
+    hpCost: 43,
+    adventureDescription: 'This adventure was kinda tough tbh!'
+  },
+  {
+    adventureName: 'Adventure 4!!!',
+    hpCost: 15,
+    adventureDescription: 'This adventure was fairly easy!'
+  },
+  {
+    adventureName: 'Adventure 5!!!!',
+    hpCost: 5,
+    adventureDescription: 'This adventure was quick!'
   }
 ];
 
@@ -109,28 +137,6 @@ const randomId = () => {
   console.log(buildId);
 };
 
-const clickDinoEvent = () => {
-  for (let i = 0; i < dinos.length; i++) {
-    document.querySelector(`#${dinos[i].name}`).addEventListener('click', function() { showSingleDino(i);});
-  }
-}
-
-const clickReturnEvent = () => {
-  document.querySelector('#return-to-home').addEventListener('click', returnHome);
-}
-
-const clickExtinguishEvent = () => {
-  for (let i = 0; i < dinos.length; i++) {
-    document.querySelector('#extinguish-dino').addEventListener('click', function() { extinguishDino(i);});
-  }
-}
-
-const clickConfirmExtinguishEvent = () => {
-  for (let i = 0; i < dinos.length; i++) {
-    document.querySelector('#confirm-extinguish').addEventListener('click', function() { confirmDinoExtinguish(i);});
-  }
-}
-
 const ageCheck = (index) => {
   for (let i = 0; i < dinos.length; i++) {
     if (index === 1) {
@@ -141,7 +147,15 @@ const ageCheck = (index) => {
   }
 }
 
-const showDinos = () => {
+const dinoClickEvent = () => {
+  for (let i = 0; i < dinos.length; i++) {
+    if (dinos[i].isDeleted === false) {
+      document.querySelector(`#${dinos[i].name}`).addEventListener('click', function() { showSingleDino(i);});
+    }
+  }
+}
+
+const buildDinos = () => {
   let domString = `
   <div class="card-deck d-flex justify-content-around flex-sm-wrap flex-row">
    `;
@@ -163,7 +177,7 @@ const showDinos = () => {
           <i class="fas fa-clinic-medical"></i>
           <i class="fas fa-utensils"></i>
           <i class="fas fa-hand-paper"></i>
-          <i class="fas fa-plane-departure"></i>
+          <i class="fas fa-plane-departure" id="${dinos[i]}"></i>
         </div>
       </div>
       `;
@@ -171,8 +185,7 @@ const showDinos = () => {
   }
   domString += `</div>`;
   printToDom('#show-dinos', domString);
-  clickDinoEvent();
-  document.querySelector('#extinguish-dino').innerHTML = '';
+  dinoClickEvent();
 }
 
 const showSingleDino = (dinoIndex) => {
@@ -208,8 +221,8 @@ const showSingleDino = (dinoIndex) => {
         <i class="fas fa-plane-departure"></i>
       </div>
       <div class="card-footer row d-flex justify-content-center">
-        <button type="button" class="btn btn-primary mr-2" id="return-to-home">Return to All Dinos</button>
-        <button type="button" class="btn btn-danger ml-2" id="extinguish-dino">Extinguish ${dinos[i].name}</button>
+        <button type="button" class="btn btn-primary mr-2" onclick="returnHome()">Return to All Dinos</button>
+        <button type="button" class="btn btn-danger ml-2" onclick="extinguishDino(${i})">Extinguish ${dinos[i].name}</button>
       </div>
     </div>
     `;
@@ -217,50 +230,43 @@ const showSingleDino = (dinoIndex) => {
   }
   printToDom('#show-specific-dino', domString);
   document.querySelector('#show-dinos').innerHTML = '';
-  clickReturnEvent();
-  clickExtinguishEvent();
 }
 
 const returnHome = () => {
   document.querySelector('#show-specific-dino').innerHTML = '';
-  showDinos();
+  buildDinos();
 }
 
-const extinguishDino = (dinoIndex) => {
-  document.querySelector('#show-specific-dino').innerHTML = '';
-  let domString = '';
+const extinguishDino = (dinoToDelete) => {
   for (let i = 0; i < dinos.length; i++) {
-    if (i === dinoIndex) {
-      domString += `
-        <form class="d-flex justify-content-center flex-column extinguish-form">
-          <div class="form-group">
-            <label for="extinguishDinoInput">This will permanently extinguish your dino.<br>
-            Please type ${dinos[i].name} to confirm.</label>
-            <input type="email" class="form-control" id="extinguishDinoInput" aria-describedby="extinguishHelp" placeholder="Type Dinos Name">
-            <small id="extinguishHelp" class="form-text text-muted">This cannot be undone</small>
-          </div>
-          <button type="button" class="btn btn-danger" id="confirm-extinguish">Extinguish ${dinos[i].name}</button>
-        </form>
-        `;
+    if (i === dinoToDelete) {
+      dinos[i].isDeleted = true;
     }
   }
-  printToDom('#extinguish-dino', domString);
-  clickConfirmExtinguishEvent();
+  document.querySelector('#show-specific-dino').innerHTML = '';
+  buildDinos();
 }
 
-const confirmDinoExtinguish = (dinoIndex) => {
+const adventureClickEvent = () => {
   for (let i = 0; i < dinos.length; i++) {
-    if (i === dinoIndex) {
-      dinos[i].isDeleted = true;
+    document.querySelector(`#${dinos[i]}`).addEventListener('click', function() { sendOnAdventure(i);});
+  }
+}
+
+const sendOnAdventure = () => {
+  const randomAdventure = Math.floor((Math.random() * adventures.length) + 0);
+  console.log(randomAdventure);
+  for (let i = 0; i < adventures.length; i++) {
+    if (i === randomAdventure) {
+      const singleAdventure = adventures.slice(i);
+      console.log(singleAdventure);
     }
   }
 }
 
 init = () => {
-  showDinos();
+  buildDinos();
+  sendOnAdventure();
 }
 
 init();
-
-// Currently the Extinguish Functions are not changing the isDeleted to true for the specific index, it is instead taking each index
-// changing isDeleted to true...
